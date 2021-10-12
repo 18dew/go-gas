@@ -116,19 +116,42 @@ type ethGasStationResponse struct {
 	Average float64 `json:"average"`
 }
 
+var keybased bool
+
+var key string
+
+var keylink = "https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json?api-key="
+
+func SetKey(k string) {
+	key = k
+	keybased = true
+}
+
 func loadGasPrices() (ethGasStationResponse, error) {
 	var prices ethGasStationResponse
+	if keybased {
 
-	res, err := http.Get(ETHGasStationURL)
-	if err != nil {
-		return prices, err
+		res, err := http.Get(keylink + key)
+
+		if err != nil {
+			return prices, err
+		}
+		if err := json.NewDecoder(res.Body).Decode(&prices); err != nil {
+			return prices, err
+		}
+		return prices, nil
+
+	} else {
+		res, err := http.Get(ETHGasStationURL)
+		if err != nil {
+			return prices, err
+		}
+		if err := json.NewDecoder(res.Body).Decode(&prices); err != nil {
+			return prices, err
+		}
+		return prices, nil
 	}
 
-	if err := json.NewDecoder(res.Body).Decode(&prices); err != nil {
-		return prices, err
-	}
-
-	return prices, nil
 }
 
 func parseSuggestedGasPrice(priority GasPriority, prices ethGasStationResponse) (*big.Int, error) {
