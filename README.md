@@ -38,7 +38,7 @@ import (
     "log"
     "time"
 
-    "github.com/hrharder/go-gas"
+    "github.com/18dew/go-gas"
 )
 
 func main() {
@@ -75,6 +75,8 @@ func main() {
         log.Fatal(err)
     }
 
+   SetKey("123123")
+    
     fmt.Println(fastGasPriceFromCache)
     fmt.Println(fasGasPriceFromAPI)
 }
